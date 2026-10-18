@@ -56,8 +56,23 @@ function killFixtures() {
   }
 }
 
-function alive(pid) {
+/**
+ * 干掉这个沙盒里起过的 watcher（powershell 命令行里带 base 路径的那些）。
+ * 两步之间必须清场：两个 watcher 盯着同一个 asar 时，谁最后写账本谁说了算，断言就会飘。
+ */
+function killWatchers() {
   try {
+    execFileSync("powershell.exe", [
+      "-NoProfile",
+      "-Command",
+      `Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" | Where-Object { $_.CommandLine -and $_.CommandLine.ToLower().Contains('${base.replace(/'/g, "''").toLowerCase()}') } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`,
+    ], { encoding: "utf8" });
+  } catch {
+    /* 没有就算了 */
+  }
+}
+
+function alive(pid) {  try {
     process.kill(pid, 0);
     return true;
   } catch (err) {
@@ -98,14 +113,23 @@ async function main() {
   check(!again.launcher, "already 时不再写新启动器");
   fs.rmSync(lock, { force: true });
   fs.rmSync(`${lock}.pid`, { force: true });
-  fs.rmSync(asar, { force: true });
 
   console.log("2) 关掉 App 的效果：watcher 自己换包并重开");
+  // 第 1 步的 watcher 还活着，也还盯着同一个 asar。先把它清掉，再单排一个「排上队时就没有 App
+  // 在跑」的 watcher：它必须自己挪包、写 .bak、重开、撤锁。不清掉就会有两个 watcher 抢同一个
+  // asar —— 先得手的那个写 relaunch，慢的那个只看见 asar 没了，写 done，结果谁最后写谁说了算。
+  killWatchers();
+  await sleep(300);
+  fs.rmSync(state, { force: true });
+  fs.rmSync(asar + ".bak", { force: true });
+  fs.writeFileSync(asar, Buffer.alloc(4096, 7));
+  const armed2 = desktop.scheduleAsarRenameWhenIdle({ exe, asar, statePath: state, logPath: log, reason: "smoke-idle-only" });
+  check(armed2.pending === true, "重新排上一次", JSON.stringify(armed2));
   const deadline = Date.now() + 40000;
   let st = null;
   while (Date.now() < deadline) {
     st = readState();
-    if (st && ["relaunch", "done", "failed", "tree-incomplete", "timeout"].includes(st.phase)) break;
+    if (st && ["relaunch", "done", "failed", "tree-incomplete", "timeout", "standby"].includes(st.phase)) break;
     await sleep(250);
   }
   console.log("   state:", JSON.stringify(st));
@@ -125,6 +149,32 @@ async function main() {
   console.log("   →", JSON.stringify(rearmed));
   check(rearmed.pending === true && rearmed.already !== true, "死锁被清掉并重新排队");
   check(rearmed.launcher && /asar-idle/.test(rearmed.launcher), "重新排时写了新的启动器", String(rearmed.launcher || ""));
+
+  console.log("4) 撞上「官方重启中」标记：退出前必须撤锁");
+  // 23:10 现场：boot 排队后立刻撞上官方重启标记，脚本 exit 0 走人，锁和 pid 留在原地，
+  // 账本却还写着 idle-armed + 一个死 pid，状态页于是谎报「在等」。
+  killWatchers();
+  await sleep(300);
+  const restartFlag = path.join(os.tmpdir(), "dsh-purge-official-restarting");
+  fs.writeFileSync(restartFlag, String(Date.now()), "utf8");
+  fs.rmSync(state, { force: true });
+  fs.rmSync(lock, { force: true });
+  fs.rmSync(`${lock}.pid`, { force: true });
+  fs.writeFileSync(asar, Buffer.alloc(4096, 5));
+  const armed3 = desktop.scheduleAsarRenameWhenIdle({ exe, asar, statePath: state, logPath: log, reason: "smoke-standby" });
+  check(armed3.pending === true, "排上了（沙盒里没有真 App 在跑）", JSON.stringify(armed3));
+  let st3 = null;
+  const deadline3 = Date.now() + 30000;
+  while (Date.now() < deadline3) {
+    st3 = readState();
+    if (st3 && st3.phase === "standby") break;
+    await sleep(250);
+  }
+  check(Boolean(st3) && st3.phase === "standby", "撞上标记就走 standby", st3 && st3.phase);
+  check(!fs.existsSync(lock), "退出前把锁撤了（不再留死锁骗人）");
+  check(!fs.existsSync(`${lock}.pid`), "pid 文件也撤了");
+  check(fs.existsSync(asar), "asar 没被动过");
+  fs.rmSync(restartFlag, { force: true });
 
   killFixtures();
   await sleep(300);

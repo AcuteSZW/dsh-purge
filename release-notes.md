@@ -1,3 +1,36 @@
+# 1.1.73+dsh0.2.1
+
+## 中文
+
+- 版本 **1.1.73**。主题：**排队了就得真在等 —— 撞上「官方重启中」也得先撤锁**。
+  本版只有一处行为修正，但它正是「状态页说在等、其实没人在等」的那条路。
+
+### 一、空闲接管撞上「官方重启中」标记时，退出前撤锁
+
+- 现场（2026-10-18 23:10）：boot 对账排上队 → 脚本第一轮就发现自己刚被官方重启标记挡下 → `exit 0` 走人。
+  退出路径上没有 `Clear-Lock`，于是 `app.asar.rename-pending` 和 `.pid` 留在原地，
+  账本却还是 `idle-armed` + 一个已经死掉的 pid（6316）——状态页照旧显示「在等: watcher:6316」。
+- 修法：`lib/desktop.js` 里 idle 脚本的该分支改为 `Clear-Lock` → `Write-State 'standby' 'official-restarting'` → `exit 0`。
+  账本从此是 `standby`，状态页说「撞上官方重启，等下一轮」，不再假装有人守着。
+- 排队本身仍可靠：`idleWatcherState(lock)` 一直是「锁 + pid 活体 + 心跳」三件套，死 pid 当场判死锁并重排；
+  本机实测（23:56）`dsh-purge --swap` 把 23:10 那个死锁清掉并重排成功，watcher pid 16792 心跳正常。
+
+### 二、`smoke:idle` 补两条断言，把这类回归钉住
+
+- 第 2 步不再拿第 1 步的 watcher 演「关掉 App」：先按 base 路径清掉残留 watcher，再单独排一个
+  「排上队时就没有 App 在跑」的脚本，断言它自己挪包、写 `app.asar.bak`、撤锁、落 `relaunch`。
+  之前那版会两个 watcher 抢同一个 asar，谁最后写账本谁说了算，于是断言时绿时红（23:56 就红过一次）。
+- 新增第 4 步：造一个新鲜的 `%TEMP%\dsh-purge-official-restarting` 标记再排队，断言脚本走 `standby`、
+  锁与 pid 都被撤掉、`app.asar` 没被动过 —— 本版修的那条路从此有测试盯着。
+
+## English
+
+- **1.1.73**: when the idle watcher is armed and then immediately meets the official-restart marker, it now
+  clears the lock and records `standby` before exiting instead of leaving `app.asar.rename-pending` with a dead
+  pid behind while the ledger still reports `idle-armed` (the 23:10 stale-lock sighting).
+- `smoke:idle` gained two checks: step 2 now clears leftover watchers and arms a fresh one so the
+  rename/`.bak`/`relaunch` assertions cannot race, and step 4 covers the restart-marker path end to end.
+
 # 1.1.72+dsh0.2.1
 
 ## 中文
