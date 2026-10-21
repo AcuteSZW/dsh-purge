@@ -12,8 +12,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/YuJunZhiXue/dsh-purge/stargazers"><img src="https://img.shields.io/github/stars/YuJunZhiXue/dsh-purge?logo=github&label=Stars" alt="GitHub stars"></a>
-  <a href="https://github.com/YuJunZhiXue/dsh-purge/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-65a30d?style=flat" alt="MIT license"></a>
+  <a href="https://github.com/AcuteSZW/dsh-purge/stargazers"><img src="https://img.shields.io/github/stars/AcuteSZW/dsh-purge?logo=github&label=Stars" alt="GitHub stars"></a>
+  <a href="https://github.com/AcuteSZW/dsh-purge/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-65a30d?style=flat" alt="MIT license"></a>
   <a href="https://awesome-dsh-plugin.com"><img src="https://awesome-dsh-plugin.com/badge.svg" alt="awesome · DSH plugin"></a>
   <a href="https://deepseek.stream/plugins/dsh-purge"><img src="https://img.shields.io/badge/Hub-dsh--purge-1a73e8" alt="DeepSeek Harness Hub"></a>
   <a href="https://www.deepseek.com/harness/"><img src="https://img.shields.io/badge/dsh-0.2.0--rc.2-blue" alt="DSH"></a>
@@ -34,7 +34,7 @@
 >
 > Adding the plugin to a profile does not patch the host. Click **dsh-purge** beside the session title → **Clean** → **Apply**. A successful Apply restarts; an unfinished Apply does not. After the restart, start a new chat — that is when the inject enters the session.
 >
-> Node.js **≥18**. Windows no-flash needs **Node ≥22**. Hub one-click and the commands below both install the npm package `dsh-purge`.
+> For a local Windows deployment, run `deploy-local.bat` from the repository directory. It deploys to the Web profile only.
 
 ## Contents
 
@@ -91,17 +91,8 @@ It only touches the official `@deepseek-ai` packages and local config on the use
 
 ## Non-profit public project. Commercial sale, paid resale, and profit from illegal or gray-market activity are forbidden. For technical reference only.
 
-## Attribution required
 
-**If you borrow this project's name, ideas, code, or prompts, you must credit the author and name the source repository:** [YuJunZhiXue/dsh-purge](https://github.com/YuJunZhiXue/dsh-purge).
-
-Using them without attribution, hiding the source, or passing them off as your own will be pursued.
-
----
-
-<a id="strict-legal--compliance-disclaimer"></a>
-
-<div>
+<a id="strict-legal--compliance-disclaimer"></a><div>
 
 ### ⚠️ <font color="red">Strict legal and compliance disclaimer</font>
 
@@ -129,111 +120,33 @@ Using them without attribution, hiding the source, or passing them off as your o
 The latest plugin supports **dsh 0.2** only — do not apply it to 0.1.x.
 
 - **dsh 0.2** (official desktop **0.2.0-rc.2** / official `dsh web`): use **1.1.40** or newer. This page installs that line.
-- **dsh 0.1.7** (incl. rc.1 / rc.2): use **1.1.39** or older — pick the tag on [Releases](https://github.com/YuJunZhiXue/dsh-purge/releases).
+- **dsh 0.1.7** (incl. rc.1 / rc.2): use **1.1.39** or older — pick the tag on [Releases](https://github.com/AcuteSZW/dsh-purge/releases).
 
 Unmatched patches stay pending or skipped; nothing is rewritten blindly.
 
 ---
 
-######## #### ## ## Install
+## Install
 
-Web and the official desktop EXE are the two maintained hosts. Install and patch each **separately**, and only the host you actually run.
+For a local deployment on Windows from this repository, run this from the repository directory:
 
+```bat
+deploy-local.bat
+```
 
-| What you run         | Profile   | Command                                      |
-| -------------------- | --------- | -------------------------------------------- |
-| Official`dsh web`    | `web`     | `dsh plugin --profile web add dsh-purge`     |
-| Official desktop EXE | `desktop` | `dsh plugin --profile desktop add dsh-purge` |
+You can also double-click `deploy-local.bat` in File Explorer. The script links this repository's plugin into `%USERPROFILE%\.dsh\profiles\web`, updates that profile's lockfile, and runs checks. Node.js, pnpm, and an existing Web profile are required. It does not install into the desktop profile or modify `node_modules`. Restart `dsh web` after deployment.
 
-If this directory is already a clone, use `add .` instead of the package name. If `dsh` is not on PATH, use [Manual install](#manual). Registry blocked: add `https://github.com/YuJunZhiXue/dsh-purge/archive/refs/heads/master.tar.gz` with the same `--profile`.
+### Apply the patches after installation
 
-Hub one-click on [dsh-plugin.org](https://dsh-plugin.org/plugins/yujunzhixue/dsh-purge) searches npm for this repository and installs `dsh-purge`. The catalog line may still show `github:` — use the command above if the button falls back to git.
+1. Fully quit and restart `dsh web`.
+2. Click **dsh-purge** beside the session title, then click **Apply** on the **Clean** page.
+3. A successful Apply restarts once; then start a new chat.
 
-For the desktop client you can also click the button (`dsh://` deep link):
+### How to tell it installed
 
-############ ###### ### ### After the command: three steps
-
-Adding the plugin to a profile does **not** patch `@deepseek-ai` by itself.
-
-1. **Quit and reopen** the host you installed into — stop and restart `dsh web`, or quit the desktop tray and reopen that app.
-2. On **that host**, click **dsh-purge** beside the session title, then **Apply** on the **Clean** page. It is not on the host Settings page.
-3. A successful **Apply** restarts once so patches load. It does not restart if it did not finish.
-
-Web controls affect Web only; desktop controls affect the desktop app only. Do not Apply one host from the other.
-
-############ ###### ### ### How to tell it installed
-
-- **dsh-purge** sits beside the session title, with **Apply** on its Clean page.
-- `/purge status` in chat prints `DSH_HOME` and the patch list — the path should be the home you actually run.
-- Optional packages that are not installed (liangshen) show as skipped and do not block Apply.
-
-############ ###### ### ### Hand this to an assistant
-
-Paste the block below to a local assistant. It should only run the install command — no disk scan, no other edits, no Apply, no restart.
-
-Install the DeepSeek Harness plugin `dsh-purge` into the Web profile only. Do not scan the whole disk, do not read or edit other files, do not apply settings, and do not restart the app. Do not install into the desktop profile.
-
-**Web (official `dsh web`)**
-
-If `dsh` is not on PATH, tell the user and stop.
-
-```shdsh```If this directory is already a clone, use `dsh plugin --profile web add .`. If the npm registry is blocked, use `dsh plugin --profile web add https://github.com/YuJunZhiXue/dsh-purge/archive/refs/heads/master.tar.gz`.
-
-After the command finishes, tell the user to fully quit and restart `dsh web`, then open **dsh-purge** beside the session title and **Apply** on **Clean**. Then stop.
-
-<a id="manual"></a>
-
-############ ###### ### ### Manual install
-
-Use this when the command fails or `dsh` is not on PATH. Edit **only the profile for the host you run** — do not touch the other, and do not delete existing bundles.
-
-**1. Find the `$DSH_HOME` this host uses.** A real home is named `.dsh` (official EXE sometimes `dsh-home`), contains `profiles`, and has at least one `profiles/<name>/package.json`. Check in order: `DSH_HOME` env → `.dsh` next to the install root (portable) → `%USERPROFILE%\.dsh` or `~/.dsh` → `%APPDATA%` / `%LOCALAPPDATA%\DeepSeek Harness\dsh-home`. Confirm: `profiles/web/package.json` has `"name": "dsh-profile-web"` (or `dsh-profile-desktop`). Machines often have two homes — use the one that belongs to the host you actually start.
-
-PowerShell to list candidates:
-
-```powershell$candsif$cands$dshif ($dsh) {
-  $dir = Split-Path $dsh.Source
-  $cands += @((Join-Path $dir ".dsh"), (Join-Path (Split-Path $dir) ".dsh"), (Join-Path (Split-Path (Split-Path $dir)) ".dsh"))
-}
-$cands += @("$env:APPDATA\DeepSeek Harness\dsh-home", "$env:LOCALAPPDATA\DeepSeek Harness\dsh-home")
-$cands | Select-Object -Unique | Where-Object { $_ -and (Test-Path (Join-Path $_ "profiles")) }
-```**2. Put the plugin at `$DSH_HOME/plugins/dsh-purge`** (folder must be named `dsh-purge`, with a `package.json` whose `"name"` is `dsh-purge`).
-
-```shgit clone https://github.com/YuJunZhiXue/dsh-purge.git "$DSH_HOME/plugins/dsh-purge"
-```Without git: download [master.tar.gz](https://github.com/YuJunZhiXue/dsh-purge/archive/refs/heads/master.tar.gz), extract, rename `dsh-purge-master` → `dsh-purge`, and place it under `plugins`. If you already have a clone, copy the whole tree — not a few `.js` files.
-
-**3. Edit only that profile's `package.json` — back it up first.** Web → `$DSH_HOME/profiles/web/package.json`; desktop → `$DSH_HOME/profiles/desktop/package.json`. Add **only two things**, keeping every existing dependency and bundle:
-
-1. In `dependencies`, add `"dsh-purge": "file:../../plugins/dsh-purge"`
-2. At the **end** of `dsh.profile.bundles`, append `"dsh-purge"` (skip if already there)
-
-```json{
-  "name": "dsh-profile-web",
-  "private": true,
-  "dependencies": {
-    "dsh-purge": "file:../../plugins/dsh-purge"
-  },
-  "dsh": {
-    "profile": {
-      "bundles": [
-        "@deepseek-ai/dsh-base",
-        "@deepseek-ai/dsh-web-app",
-        "dsh-purge"
-      ],
-      "patchReload": "live"
-    }
-  }
-}
-```Keep JSON valid (comma before the new item, none after the last). Do not switch `file:../../plugins/dsh-purge` to an absolute path, do not touch `patchReload` or other plugins, and do not list `"dsh-purge"` twice. On desktop, if there is no `dsh-web-app` row, do not add one.
-
-**4. Run `pnpm install` in that profile only** (`cd` into the profile dir, not the repo root or `$DSH_HOME`):
-
-```shcd "$DSH_HOME/profiles/web"   # or profiles/desktop
-pnpm install
-```Success: `profiles/<web|desktop>/node_modules/dsh-purge/package.json` exists. If `pnpm` is missing, use the Node / pnpm shipped with official `dsh`; on `Could not resolve`, re-check the `file:` path; on a JSON error, fix commas or restore the backup.
-
-**5. Fully quit that host, reopen it, then Apply** — same three steps as above. The card appears beside the session title; click **Apply** (or `/purge apply`) on that host only. If the card is missing, you likely edited the other `.dsh` — go back to step 1.
-
+- **dsh-purge** appears beside the session title, and **Apply** is available on its Clean page.
+- `/purge status` in chat prints `DSH_HOME` and the patch list.
+- Optional packages that are not installed (such as liangshen) show as skipped and do not block Apply.
 ### ### Uninstall
 
 **dsh-purge** beside the session title → **Clean** → **Uninstall**. Confirm the dialog: it reverts any applied patches, restores the original Harness, and restarts the current host.
@@ -458,14 +371,14 @@ If nothing is found, set `DSH_BASE` / `DSH_DESKTOP_INSTALL`. No files are change
 
 ## ## Releases
 
-What changed, and the zip, are on [Releases](https://github.com/YuJunZhiXue/dsh-purge/releases). To publish, bump the version in `package.json`, write Chinese and English notes in `release-notes.md`, and push `master`. Pushing the same version again does not publish another package.
+What changed, and the zip, are on [Releases](https://github.com/AcuteSZW/dsh-purge/releases). To publish, bump the version in `package.json`, write Chinese and English notes in `release-notes.md`, and push `master`. Pushing the same version again does not publish another package.
 
 ## ## Notes
 
 - Scope is rendered copy, defaults, and runtime logic inside local `@deepseek-ai/*` packages, plus override files and rule sets under the harness home.
 - After an upgrade, unmatched originals show as skipped. Apply still completes, and those files are left unchanged.
 - Third-party plugin *source repos* outside `@deepseek-ai` are left alone (CMD silence may **best-effort** patch installed doctor / market / liangshen / mnemon at runtime).
-- Install the npm package `dsh-purge`: `dsh plugin --profile web add dsh-purge` or `dsh plugin --profile desktop add dsh-purge`. From this repo, `add .`. If the registry is blocked, add the master.tar.gz URL instead. Hub one-click uses the same npm package.
+- For a local Windows deployment, run `deploy-local.bat` from the repository directory. It deploys to `%USERPROFILE%\.dsh\profiles\web` only.
 
 ---
 
