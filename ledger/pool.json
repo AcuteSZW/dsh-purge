@@ -1,6 +1,5 @@
 {
   "tasks": {
-    "20261111-1535-b243-红队存储安全与性能优化": {"category": null, "created": "2026-11-11 15:35:56", "creator": "00094ae7-dd47-4566-ad6e-326b64dc4e53", "creator_name": "Lucas", "finished": null, "owner": null, "owner_name": null, "started": "2026-11-11 15:35:56", "status": "open", "tags": ["路径安全", "分页校验", "截图性能"], "title": "红队存储安全与性能优化", "updated": "2026-11-11 15:47:53", "worklog": "worklog/202611/11-1535-b243-红队存储安全与性能优化.md"}
   },
   "version": "20261022000000"
 }
