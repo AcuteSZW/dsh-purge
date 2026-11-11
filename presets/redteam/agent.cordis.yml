@@ -289,12 +289,10 @@
   config:
     # 官方 experimental-agent-team-profile 会在 profile 层 disabled 掉同名行。
     # 红队必须显式 disabled: false，否则只有 spawn_teammate，指挥按 subagent 派活会失败。
+    # v0.2.1-rc.1 起 send_message / interrupt_agent / list_agents 由主入口一次性注册，
+    # 独立的 /list-agents 子路径导出已移除，不再单列那一行。
     - id: tool-subagent-control
       name: '@deepseek-ai/dsh-tool-subagent-control'
-      disabled: false
-
-    - id: tool-subagent-list-agents
-      name: '@deepseek-ai/dsh-tool-subagent-control/list-agents'
       disabled: false
 
     - id: tool-subagent
@@ -303,21 +301,12 @@
       config:
         provider: spawn
         toolName: subagent
-        modelSelectionSettings: true
+        modelSelection: true
         backgroundMode: continuable
         # 子智能体是角色执行者（信息收集/资产梳理/漏洞发现/漏洞利用/内网渗透），**必须是叶子节点**：
-        # 靠提示词劝"不要再往下委派"是软的——模型完全可以无视。这里直接把委派工具从子会话的
-        # 工具目录里摘掉，子智能体连看都看不到 subagent / subagent_fork / workflow / ralph。
-        # maxDepth 同时收成 1 作为二道保险（默认 3 层太深，会白吃并发预算与上下文）。
+        # v0.2.1-rc.1 起 toolFilter / persona 已从委派工具移除（人设在 Agent Preset 里配、用 agentPreset 选），
+        # 叶子约束改由 maxDepth: 1 兜底；子会话的额外工具裁剪需要放到对应的子预设里做。
         maxDepth: 1
-        # 注意：不能 deny `subagent` —— 它是这一行自己注册的 scoped 工具，不在全局工具库里，
-        # 写进 deny 会让 tools.restrict() 校验失败、整个委派路径报 "unknown global tool"（v0.8.0 踩过）。
-        # 子智能体拿不到 subagent_fork/workflow/ralph，加上 maxDepth: 1，实际已无派发能力。
-        toolFilter:
-          deny:
-            - subagent_fork
-            - workflow
-            - ralph
 
     # Fork omits model selection so provider/model stay equal to the parent and
     # the inherited history remains eligible for KV Cache reuse. This preset
