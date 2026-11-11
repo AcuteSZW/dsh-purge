@@ -302,23 +302,23 @@
         provider: spawn
         toolName: subagent
         modelSelection: true
-        backgroundMode: continuable
         # 子智能体是角色执行者（信息收集/资产梳理/漏洞发现/漏洞利用/内网渗透），**必须是叶子节点**：
-        # v0.2.1-rc.1 起 toolFilter / persona 已从委派工具移除（人设在 Agent Preset 里配、用 agentPreset 选），
-        # 叶子约束改由 maxDepth: 1 兜底；子会话的额外工具裁剪需要放到对应的子预设里做。
+        # v0.2.1-rc.1 起 toolFilter / persona 已从委派工具移除；子会话改绑独立叶子预设
+        # `redteam-leaf`，那份预设的工具列表里不含委派 / workflow / ralph；
+        # maxDepth: 1 再兜底禁止继续递归委派。
+        agentPreset: redteam-leaf
         maxDepth: 1
 
     # Fork omits model selection so provider/model stay equal to the parent and
-    # the inherited history remains eligible for KV Cache reuse. This preset
-    # keeps fork continuable; parent and child inherit the same messaging tool,
-    # while the parent id and return guidance follow the inherited history.
+    # the inherited history remains eligible for KV Cache reuse. Parent and child
+    # inherit the same messaging tool; the parent id and return guidance follow
+    # the inherited history.
     - id: tool-subagent-fork
       name: '@deepseek-ai/dsh-tool-subagent'
       disabled: false
       config:
         provider: fork
         toolName: subagent_fork
-        backgroundMode: continuable
 
     # Production dsh does not install these optional providers. Install the
     # matching Bundle in this Profile and restart the Host, then copy this
@@ -330,7 +330,6 @@
       config:
         provider: codex
         toolName: subagent_codex
-        backgroundMode: one-shot
         maxDepth: provider-managed
 
     - id: tool-subagent-claude-code
@@ -339,7 +338,6 @@
       config:
         provider: claude-code
         toolName: subagent_claude_code
-        backgroundMode: one-shot
         maxDepth: provider-managed
 
     - id: workflow-worker-thread
