@@ -77,7 +77,7 @@ Harness does more than forward a prompt. It rewrites prompts, approval gates, sa
 
 | You get            | What it does                                                                                                                                                                   |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **dsh-purge dock** | A button beside the session title opens the right dock. Two pages: Clean and Drill                                                                                             |
+| **dsh-purge dock** | A button in the composer toolbar opens the right dock. Two pages: Clean and Drill                                                                                             |
 | **Clean**          | Grouped patch status, Apply / Restore / Uninstall, prompt editor, multiple rule sets                                                                                           |
 | **Drill**          | Built into the stable release. After authorization: assets, skills, and the local environment. Only for a host you manage, an offline target, or a written authorized exercise |
 | **Host policy**    | Default copy, permission policy, and tool limits. Official capabilities stay. No second invented identity                                                                      |
@@ -200,7 +200,7 @@ On the Clean page, under Prompt. One host per line, then Save list. Steps are in
 
 | Area        | What it shows                                                                                                                                                                                                                          |
 | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| dsh-purge   | button beside the session title; opens or collapses the dock                                                                                                                                                                           |
+| dsh-purge   | button in the composer toolbar (same row as PUA); opens or collapses the dock                                                                                                                                                          |
 | Clean       | the old Rules page: patches, prompt, rule sets, skills                                                                                                                                                                                 |
 | Drill       | assets, skills, and environment after authorization. The tab says Unauthorized until then                                                                                                                                              |
 | Patches     | grouped status, Apply, Restore, or Uninstall                                                                                                                                                                                           |

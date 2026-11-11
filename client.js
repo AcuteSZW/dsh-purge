@@ -945,9 +945,6 @@ body[data-ds-dark-theme] .dshp-restart-card .dshp-btn-primary,body[data-ds-dark-
 
 .dshp-dock{position:fixed;top:12px;right:12px;z-index:10050;display:flex;flex-direction:column;width:var(--dshp-dock-w,620px);height:var(--dshp-dock-h,72vh);min-width:380px;min-height:320px;max-width:calc(100vw - 16px);max-height:calc(100vh - 16px);box-sizing:border-box;background:color-mix(in srgb,var(--dsw-alias-bg-layer-1,var(--dshp-paper,#1c1c1c)) 52%,transparent);backdrop-filter:blur(22px) saturate(1.35);-webkit-backdrop-filter:blur(22px) saturate(1.35);border:1px solid color-mix(in srgb,var(--dsw-alias-border-l1,var(--dshp-line,#555)) 65%,transparent);border-radius:12px;box-shadow:0 18px 48px color-mix(in srgb,#000 30%,transparent),0 0 0 1px color-mix(in srgb,#fff 6%,transparent);pointer-events:auto;color:var(--dsw-alias-label-primary,var(--dshp-ink,#f2f2f2));overflow:visible}
 .dshp-dock[data-open="0"]{display:none}
-.dshp-launch{position:fixed;right:16px;bottom:16px;z-index:10040;appearance:none;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:1px solid color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 55%,transparent);border-radius:999px;background:color-mix(in srgb,var(--dsw-alias-bg-layer-1,#1c1c1c) 72%,transparent);color:var(--dsw-alias-label-primary,#f2f2f2);cursor:pointer;font:13px/1 inherit;box-shadow:0 8px 22px color-mix(in srgb,#000 28%,transparent);pointer-events:auto}
-.dshp-launch:hover{border-color:var(--dsw-alias-brand-primary,#6dbf8c);background:color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 18%,transparent)}
-.dshp-launch[data-open="1"]{display:none}
 .dshp-dock-head{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid color-mix(in srgb,var(--dsw-alias-border-l1,var(--dshp-line,#555)) 55%,transparent);background:transparent;cursor:grab;user-select:none;touch-action:none;color:var(--dsw-alias-label-primary,var(--dshp-ink,#f2f2f2));border-radius:12px 12px 0 0}
 .dshp-dock-head:active{cursor:grabbing}
 .dshp-dock-head b{font-size:14px;font-weight:600;color:inherit;text-shadow:0 1px 0 color-mix(in srgb,#000 18%,transparent)}
@@ -1011,16 +1008,6 @@ body:not([data-ds-dark-theme]) .dshp-auth-ops button.primary{background:var(--ds
 .dshp-hbtn{appearance:none;display:inline-flex;flex:0 0 auto;align-items:center;gap:6px;border:1px solid color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 55%,transparent);background:transparent;color:var(--dsw-alias-label-secondary,currentColor);cursor:pointer;font:12px/1 inherit;padding:5px 10px;border-radius:8px;white-space:nowrap}
 .dshp-hbtn:hover{border-color:var(--dsw-alias-brand-primary,#6dbf8c);background:color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 12%,transparent);color:var(--dsw-alias-label-primary,currentColor)}
 .dshp-hbtn.on{border-color:var(--dsw-alias-brand-primary,#6dbf8c);color:var(--dsw-alias-brand-primary,#6dbf8c);background:color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 18%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 32%,transparent)}
-.dshp-live-dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--dsw-alias-brand-primary,#6dbf8c);box-shadow:0 0 0 3px color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 28%,transparent)}
-.dshp-hero-chip{display:inline-flex;align-items:center;margin-left:6px;flex:0 0 auto}
-.dshp-hero-chip-btn{appearance:none;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border:1px solid color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 50%,transparent);border-radius:999px;background:color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 10%,transparent);color:var(--dsw-alias-label-primary,currentColor);cursor:pointer;font:12.5px/1 inherit;white-space:nowrap}
-.dshp-hero-chip-btn:hover{border-color:var(--dsw-alias-brand-primary,#6dbf8c);background:color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 18%,transparent)}
-.dshp-hero-chip-btn.on{border-color:var(--dsw-alias-brand-primary,#6dbf8c);color:var(--dsw-alias-brand-primary,#6dbf8c);background:color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 18%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 32%,transparent)}
-.dshp-tab-chip{display:inline-flex;align-items:flex-end;flex:0 0 auto}
-.dshp-tab-btn{appearance:none;position:relative;border:none;background:transparent;cursor:pointer;padding:0 0 9px;font:500 13px/16px inherit;color:var(--dsw-alias-label-tertiary,currentColor);white-space:nowrap}
-.dshp-tab-btn:hover{color:var(--dsw-alias-label-primary,currentColor)}
-.dshp-tab-btn.on{color:var(--dsw-alias-brand-primary,#6dbf8c)}
-.dshp-tab-btn.on:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;border-radius:2px;background:var(--dsw-alias-brand-primary,#6dbf8c)}
 /* 玻璃跟随宿主颜色。字重和底的不透明度分开：壳透，字坐在更实的一层上。 */
 .dshp-dock{font-family:"Segoe UI","Microsoft YaHei UI","PingFang SC","Noto Sans SC",system-ui,sans-serif;font-size:14px;line-height:1.6;font-weight:500;-webkit-font-smoothing:antialiased;text-shadow:none}
 .dshp-dock[data-theme="white"],.dshp-dock[data-theme="dusk"]{background:linear-gradient(165deg,color-mix(in srgb,var(--dsw-alias-bg-layer-1,#fff) 50%,transparent),color-mix(in srgb,var(--dsw-alias-brand-primary,#6d8f78) 18%,transparent) 46%,color-mix(in srgb,var(--dsw-alias-bg-layer-2,#fff) 28%,transparent))!important;backdrop-filter:blur(26px) saturate(1.45)!important;-webkit-backdrop-filter:blur(26px) saturate(1.45)!important;color:var(--dshp-ink)!important;border:1px solid color-mix(in srgb,var(--dsw-alias-brand-primary,#6d8f78) 36%,transparent)!important;box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 42%,transparent),0 18px 44px color-mix(in srgb,#000 18%,transparent)!important}
@@ -8519,140 +8506,35 @@ body[data-ds-dark-theme] .dshp-rewind-item span{color:var(--dsw-alias-label-tert
 			);
 		}
 
-		function PurgeLauncher() {
-			const t = useT();
+		/** 输入框工具栏里的开关按钮（与 PUA 同排），打开 / 收起右侧面板。 */
+		function ComposerLauncher(props) {
+			const t = (props && props.t) || translate;
 			const st = useDock();
 			return h("button", {
 				type: "button",
-				className: "dshp-launch",
-				"data-open": st.open ? "1" : "0",
+				className: "dshp-hbtn" + (st.open ? " on" : ""),
 				"data-testid": "dsh-purge-launch",
-				title: t("dock.newSession"),
-				onClick: () => toggleDock(),
-			}, t("dock.newSession"));
-		}
-
-		/** 首页：模式旁挂「dsh-purge」→ 打开插件。红队模式走模式下拉（registry 声明）。 */
-		function HeroNewSessionMount() {
-			const t = useT();
-			const st = useDock();
-			const [host, setHost] = useState(null);
-			useEffect(() => {
-				let dead = false;
-				let warnedMiss = false;
-				const ensure = () => {
-					if (dead || typeof document === "undefined") return;
-					/* 多路挂点兜底:语义化 data-* 优先,class 子串模糊匹配兜底(不绑定具体 CSS Module 哈希) */
-					const row =
-						document.querySelector('[data-dsh-hero-workspace-row]') ||
-						document.querySelector('[data-conversation-hero]') ||
-						document.querySelector('[class*="heroWorkspaceRow" i]') ||
-						document.querySelector('[class*="hero" i][class*="workspace" i][class*="row" i]');
-					if (!row) {
-						if (!warnedMiss) {
-							warnedMiss = true;
-							try { console.warn("[dsh-purge] HeroNewSessionMount: anchor row missing (host 可能改版)"); } catch { /* ignore */ }
-						}
-						setHost((prev) => (prev ? null : prev));
-						return;
-					}
-					warnedMiss = false;
-					let el = row.querySelector(":scope > .dshp-hero-chip");
-					if (!el) {
-						el = document.createElement("div");
-						el.className = "dshp-hero-chip";
-						el.setAttribute("data-testid", "dsh-purge-hero-chip");
-						row.appendChild(el);
-					}
-					setHost((prev) => (prev === el ? prev : el));
-				};
-				ensure();
-				const obs = typeof MutationObserver !== "undefined"
-					? new MutationObserver(() => ensure())
-					: null;
-				if (obs) obs.observe(document.body, { childList: true, subtree: true });
-				const iv = setInterval(ensure, 1000);
-				return () => {
-					dead = true;
-					if (obs) obs.disconnect();
-					clearInterval(iv);
-				};
-			}, []);
-			if (!host) return null;
-			const btn = h("button", {
-				type: "button",
-				className: "dshp-hero-chip-btn" + (st.open ? " on" : ""),
-				title: t("dock.newSession"),
-				onClick: () => toggleDock(),
-			},
-				st.open ? h("span", { className: "dshp-live-dot", "aria-hidden": "true" }) : null,
-				t("dock.newSession"),
-			);
-			try {
-				const rd = require("react-dom");
-				if (rd && typeof rd.createPortal === "function") return rd.createPortal(btn, host);
-			} catch { /* host 可能没暴露 react-dom */ }
-			return null;
-		}
-
-		/** 挂在「对话 / 轨迹 / 上下文」这一排，紧挨上下文。 */
-		function TabRowPurgeMount() {
-			const t = useT();
-			const st = useDock();
-			const [host, setHost] = useState(null);
-			useEffect(() => {
-				let dead = false;
-				let warnedMiss = false;
-				const ensure = () => {
-					if (dead || typeof document === "undefined") return;
-					/* 多路挂点兜底:data-* 优先,ARIA / class 子串兜底 */
-					const row =
-						document.querySelector("[data-conversation-tabs]") ||
-						document.querySelector("[data-conversation-tabrow]") ||
-						document.querySelector("[role='tablist'][aria-label*='对话' i]") ||
-						document.querySelector("[class*='conversation' i][class*='tab' i][class*='row' i]");
-					if (!row) {
-						if (!warnedMiss) {
-							warnedMiss = true;
-							try { console.warn("[dsh-purge] TabRowPurgeMount: tab row anchor missing"); } catch { /* ignore */ }
-						}
-						setHost((prev) => (prev ? null : prev));
-						return;
-					}
-					warnedMiss = false;
-					let el = row.querySelector(":scope > .dshp-tab-chip");
-					if (!el) {
-						el = document.createElement("div");
-						el.className = "dshp-tab-chip";
-						el.setAttribute("data-testid", "dsh-purge-tab-chip");
-						row.appendChild(el);
-					}
-					setHost((prev) => (prev === el ? prev : el));
-				};
-				ensure();
-				const obs = typeof MutationObserver !== "undefined"
-					? new MutationObserver(() => ensure())
-					: null;
-				if (obs) obs.observe(document.body, { childList: true, subtree: true });
-				const iv = setInterval(ensure, 1000);
-				return () => {
-					dead = true;
-					if (obs) obs.disconnect();
-					clearInterval(iv);
-				};
-			}, []);
-			if (!host) return null;
-			const btn = h("button", {
-				type: "button",
-				className: "dshp-tab-btn" + (st.open ? " on" : ""),
 				title: st.open ? (t("dock.inSession") + " · 已开启") : (t("dock.inSession") + " · 点击打开"),
+				"aria-label": t("dock.inSession"),
 				onClick: () => toggleDock(),
 			}, t("dock.inSession"));
-			try {
-				const rd = require("react-dom");
-				if (rd && typeof rd.createPortal === "function") return rd.createPortal(btn, host);
-			} catch { /* host 可能没暴露 react-dom */ }
-			return null;
+		}
+
+		class ComposerLauncherSafe extends Component {
+			constructor(p) { super(p); this.state = { failed: false }; }
+			static getDerivedStateFromError() { return { failed: true }; }
+			componentDidCatch(e) { try { console.error("[dsh-purge] composer slot:", e); } catch { /* ignore */ } }
+			render() {
+				if (this.state.failed) {
+					return h("button", {
+						type: "button",
+						className: "dshp-hbtn",
+						title: "dsh-purge",
+						onClick: () => toggleDock(),
+					}, "dsh-purge");
+				}
+				return h(ComposerLauncher, this.props);
+			}
 		}
 
 
@@ -8670,6 +8552,16 @@ body[data-ds-dark-theme] .dshp-rewind-item span{color:var(--dsw-alias-label-tert
 					t: ctx.locale.bind(NS),
 				}),
 			}, RewindSafe));
+			/* 工具栏开关按钮：与 PUA 同排，左侧槽位（桌面布局） */
+			ctx.slots.inject("conversation.input.left", () => ctx.slots.register({
+				name: "conversation.input.left",
+				id: "dsh-purge-launch",
+				order: 10,
+				inject: (arg) => ({
+					sessionId: (arg && arg.sessionId) ? arg.sessionId : arg,
+					t: ctx.locale.bind(NS),
+				}),
+			}, ComposerLauncherSafe));
 			// ctx.slots.inject("conversation.input.right", () => ctx.slots.register({
 			// 	name: "conversation.input.right",
 			// 	id: "dsh-purge-continue",
@@ -8690,7 +8582,7 @@ body[data-ds-dark-theme] .dshp-rewind-item span{color:var(--dsw-alias-label-tert
 				name: "shell.overlay",
 				id: "dsh-purge-dock",
 				order: 50,
-			}, () => h(react.Fragment, null, h(WelcomeNotice), h(PurgeLauncher), h(PurgeDock), h(HeroNewSessionMount), h(TabRowPurgeMount), h(EnvAdaptSendGate))));
+			}, () => h(react.Fragment, null, h(WelcomeNotice), h(PurgeDock), h(EnvAdaptSendGate))));
 			try {
 				if (typeof ctx.inject === "function") {
 					ctx.inject(["sessions", "uiWorkspace", "workspaces", "conversation"], (host) => installRewindUi(host));

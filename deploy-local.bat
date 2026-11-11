@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 setlocal
 cd /d "%~dp0"
 
@@ -13,49 +14,54 @@ if not defined HARNESS_ROOT (
   if exist "%HARNESS_CANDIDATE%\package.json" set "HARNESS_ROOT=%HARNESS_CANDIDATE%"
 )
 if not defined HARNESS_ROOT (
-  echo WARNING: source harness was not found nearby.
-  echo The plugin dshTarget will remain unchanged.
+  echo [警告] 附近没找到 deepseek-harness 源码目录。
+  echo        插件 dshTarget 保持原样，不做改动。
 )
 if not exist "%PLUGIN_DIR%\package.json" (
-  echo ERROR: plugin package.json is missing.
+  echo [错误] 缺少插件 package.json。
+  pause
   exit /b 1
 )
 if not exist "%PROFILE_DIR%\package.json" (
-  echo ERROR: web profile not found: "%PROFILE_DIR%"
+  echo [错误] 找不到 web profile："%PROFILE_DIR%"
+  pause
   exit /b 1
 )
 
-rem Online deployment: update the source link and lockfile only.
-rem Do not touch node_modules while DSH may have the plugin loaded.
-echo [1/4] Updating local profile manifest...
+rem 在线部署：只更新源码链接和 lockfile，
+rem 不碰 node_modules（DSH 可能正在加载本插件）。
+echo [1/4] 更新本地 profile 清单...
 node "%PLUGIN_DIR%scripts\deploy-local.mjs" "%PLUGIN_DIR%\." "%PROFILE_DIR%"
 if errorlevel 1 (
-  echo ERROR: deployment preparation failed.
+  echo [错误] 部署准备失败。
+  pause
   exit /b 1
 )
 
-echo [2/4] Refreshing profile lockfile only...
+echo [2/4] 仅刷新 profile lockfile...
 pushd "%PROFILE_DIR%"
 call pnpm install --config.minimum-release-age=0 --lockfile-only
 set "LOCK_RC=%ERRORLEVEL%"
 popd
 if not "%LOCK_RC%"=="0" (
-  echo ERROR: profile lockfile update failed.
+  echo [错误] profile lockfile 更新失败。
+  pause
   exit /b %LOCK_RC%
 )
 
-echo [3/4] Verifying source plugin entry import...
+echo [3/4] 校验插件入口能否正常导入...
 pushd "%PLUGIN_DIR%"
 node -e "import('./lib/index.js').then(m=>{if(typeof m.apply!=='function')process.exit(2);console.log('source dsh-purge import OK')}).catch(e=>{console.error(e);process.exit(1)})"
 set "IMPORT_RC=%ERRORLEVEL%"
 popd
 if not "%IMPORT_RC%"=="0" (
-  echo ERROR: source plugin import check failed.
+  echo [错误] 插件入口导入校验失败。
+  pause
   exit /b %IMPORT_RC%
 )
 
 if defined HARNESS_ROOT (
-  echo [4/4] Checking source DSH profile composition...
+  echo [4/4] 检查 DSH profile 实际加载情况...
   pushd "%HARNESS_ROOT%"
   call pnpm run dsh --profile web --dump-config > "%TEMP%\dsh-purge-deploy-dump.log" 2>&1
   set "DUMP_RC=%ERRORLEVEL%"
@@ -63,25 +69,31 @@ if defined HARNESS_ROOT (
   if errorlevel 1 (
     findstr /C:"name: dsh-purge" "%TEMP%\dsh-purge-deploy-dump.log" >nul
     if errorlevel 1 (
-      echo ERROR: dsh dump-config failed and dsh-purge is absent from the effective config.
+      echo [错误] dsh dump-config 失败，且 dsh-purge 未出现在生效配置里。
       type "%TEMP%\dsh-purge-deploy-dump.log"
+      pause
       exit /b %DUMP_RC%
     )
-    echo WARNING: dump-config reported unrelated existing profile patch errors.
-    echo dsh-purge is present in the effective config; see "%TEMP%\dsh-purge-deploy-dump.log"
+    echo [警告] dump-config 报了一些与 dsh-purge 无关的既有 profile patch 错误。
+    echo        dsh-purge 已在生效配置中，详见："%TEMP%\dsh-purge-deploy-dump.log"
   )
   findstr /C:"name: dsh-purge" "%TEMP%\dsh-purge-deploy-dump.log" >nul
   if errorlevel 1 (
-    echo ERROR: dsh-purge bundle is missing in effective config.
+    echo [错误] 生效配置里缺少 dsh-purge。
     type "%TEMP%\dsh-purge-deploy-dump.log"
+    pause
     exit /b 1
   )
-  echo Effective DSH configuration includes dsh-purge.
-  echo Restart dsh web when convenient to activate it.
+  echo     生效配置已包含 dsh-purge。
+  echo     方便时重启 dsh web 即可加载新版本。
 ) else (
-  echo [4/4] Skipping source DSH config check; checkout not found.
+  echo [4/4] 跳过 DSH 配置检查（未找到源码目录）。
 )
 
-echo Online deployment is ready. DSH keeps using its loaded copy until restarted.
-echo Restart dsh web when convenient to activate the new plugin version.
+echo.
+echo ============================================
+echo  部署成功！DSH 当前仍在用旧副本，
+echo  方便时重启 dsh web 即可生效新版本。
+echo ============================================
+pause
 exit /b 0

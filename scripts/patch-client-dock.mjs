@@ -342,47 +342,6 @@ const dockBlock = `
 			);
 		}
 
-		function HeroNewSessionMount() {
-			const t = useT();
-			const st = useDock();
-			const [host, setHost] = useState(null);
-			useEffect(() => {
-				let dead = false;
-				const ensure = () => {
-					if (dead || typeof document === "undefined") return;
-					const row = document.querySelector('[class*="heroWorkspaceRow"]');
-					if (!row) { setHost((prev) => (prev ? null : prev)); return; }
-					let el = row.querySelector(":scope > .dshp-hero-chip");
-					if (!el) {
-						el = document.createElement("div");
-						el.className = "dshp-hero-chip";
-						row.appendChild(el);
-					}
-					setHost((prev) => (prev === el ? prev : el));
-				};
-				ensure();
-				const obs = typeof MutationObserver !== "undefined" ? new MutationObserver(() => ensure()) : null;
-				if (obs) obs.observe(document.body, { childList: true, subtree: true });
-				const iv = setInterval(ensure, 1000);
-				return () => { dead = true; if (obs) obs.disconnect(); clearInterval(iv); };
-			}, []);
-			if (!host) return null;
-			const btn = h("button", {
-				type: "button",
-				className: "dshp-hero-chip-btn" + (st.open ? " on" : ""),
-				title: t("dock.newSession"),
-				onClick: () => toggleDock(),
-			},
-				st.open ? h("span", { className: "dshp-live-dot", "aria-hidden": "true" }) : null,
-				t("dock.newSession"),
-			);
-			try {
-				const rd = require("react-dom");
-				if (rd && typeof rd.createPortal === "function") return rd.createPortal(btn, host);
-			} catch { /* ignore */ }
-			return null;
-		}
-
 `;
 
 if (!client.includes("function PurgeDock()")) {
@@ -423,7 +382,7 @@ const newApply = `		function apply(ctx) {
 				name: "shell.overlay",
 				id: "dsh-purge-dock",
 				order: 50,
-			}, () => h(react.Fragment, null, h(PurgeDock), h(HeroNewSessionMount), h(TabRowPurgeMount), h(EnvAdaptSendGate))));
+			}, () => h(react.Fragment, null, h(PurgeDock), h(EnvAdaptSendGate))));
 			try {
 				if (typeof ctx.inject === "function") {
 					ctx.inject(["sessions", "uiWorkspace", "workspaces", "conversation"], (host) => installRewindUi(host));
