@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "00094ae7-dd47-4566-ad6e-326b64dc4e53"},
   "tasks": {
-    "20261112-1011-ae76-红队存储后续优化": {"category": null, "created": "2026-11-12 10:11:01", "creator": "00094ae7-dd47-4566-ad6e-326b64dc4e53", "creator_name": "Lucas", "finished": null, "owner": "00094ae7-dd47-4566-ad6e-326b64dc4e53", "owner_name": "Lucas", "started": "2026-11-12 10:11:01", "status": "doing", "tags": ["路径安全", "一致性", "性能基准"], "title": "红队存储后续优化", "updated": "2026-11-12 10:55:10", "worklog": "worklog/202611/12-1011-ae76-红队存储后续优化.md"}
+    "20261112-1011-ae76-红队存储后续优化": {"category": null, "created": "2026-11-12 10:11:01", "creator": "00094ae7-dd47-4566-ad6e-326b64dc4e53", "creator_name": "Lucas", "finished": null, "owner": "00094ae7-dd47-4566-ad6e-326b64dc4e53", "owner_name": "Lucas", "started": "2026-11-12 10:11:01", "status": "doing", "tags": ["路径安全", "一致性", "性能基准"], "title": "红队存储后续优化", "updated": "2026-11-12 10:58:07", "worklog": "worklog/202611/12-1011-ae76-红队存储后续优化.md"}
   },
   "version": "20261022000000"
 }
