@@ -14,6 +14,9 @@ import { execFileSync } from "node:child_process";
 
 const effect = await import(new URL("../lib/patch-effect.js", import.meta.url));
 const desktop = await import(new URL("../lib/desktop.js", import.meta.url));
+const validate = await import(new URL("../lib/redteam/validate.js", import.meta.url));
+const pagination = await import(new URL("../lib/redteam/pagination.js", import.meta.url));
+const { RedteamStore } = await import(new URL("../lib/redteam/store-core.js", import.meta.url));
 
 const results = [];
 let failed = 0;
@@ -74,6 +77,121 @@ await check("账本：合并写 / 读 / BOM 容错 / 清理", () => {
     assert.equal(effect.readSwapLedger(home), null);
   } finally {
     fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+await check("分页参数：安全整数化、零值、默认值与上限", () => {
+  const cases = [
+    [undefined, 50], [null, 50], ['', 50], [0, 0], ['0', 0], [3, 3], [2.8, 2],
+    [-1, 0], ['bad', 50], [Infinity, 50], [-Infinity, 50], [999, 200],
+  ];
+  for (const [input, expected] of cases) assert.equal(pagination.normalizeLimit(input, 50, 200), expected);
+  assert.equal(pagination.normalizeOffset(-3), 0);
+  assert.equal(pagination.normalizeOffset(2.8), 2);
+  assert.equal(pagination.normalizeOffset(Infinity), 0);
+  assert.equal(pagination.normalizeOffset(7), 7);
+});
+
+await check("截图：同名上传不覆盖既有证据", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "purge-shot-selftest-"));
+  const store = new RedteamStore(root);
+  try {
+    const engagement = store.openEngagement("screenshot-test", []);
+    assert.deepEqual(store.listAssets(engagement.id, { limit: 0 }).items, []);
+    assert.deepEqual(store.listWeb(engagement.id, { limit: 0 }).items, []);
+    const original = Buffer.from("original evidence");
+    const replacement = Buffer.from("replacement evidence");
+    const shot = store.addShot(engagement.id, { file: "fixed.png", data_base64: original.toString("base64") });
+    assert.throws(
+      () => store.addShot(engagement.id, { file: "fixed.png", data_base64: replacement.toString("base64") }),
+      /already registered/,
+    );
+    const read = store.readShot(engagement.id, shot.id);
+    assert.deepEqual(Buffer.from(read.base64, "base64"), original);
+    assert.equal(read.bytes, original.length);
+    const storedSha = store.db(engagement.id).prepare("SELECT sha256 FROM shot WHERE id = ?").get(shot.id).sha256;
+    fs.rmSync(path.join(store.shotsDirOf(engagement.id), "fixed.png"));
+    assert.throws(
+      () => store.addShot(engagement.id, { file: "fixed.png", data_base64: replacement.toString("base64") }),
+      /already registered/,
+    );
+    assert.equal(fs.existsSync(path.join(store.shotsDirOf(engagement.id), "fixed.png")), false);
+    assert.equal(store.db(engagement.id).prepare("SELECT sha256 FROM shot WHERE id = ?").get(shot.id).sha256, storedSha);
+  } finally {
+    store.close();
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+await check("POC 删除：路径前缀相似的兄弟目录保持不变", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "purge-poc-delete-selftest-"));
+  const store = new RedteamStore(root);
+  const sibling = path.join(root, "pocs-evil");
+  try {
+    const saved = store.savePoc({ code: "safe-poc", title: "delete boundary test", content: "fixture" });
+    fs.mkdirSync(sibling);
+    fs.writeFileSync(path.join(sibling, "keep.txt"), "keep");
+    store.kb().prepare("UPDATE poc SET code = ? WHERE id = ?").run("../pocs-evil", saved.poc.id);
+    assert.equal(store.deletePoc(saved.poc.id).ok, true);
+    assert.equal(fs.readFileSync(path.join(sibling, "keep.txt"), "utf8"), "keep");
+  } finally {
+    store.close();
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+await check("路径校验：拒绝根目录内指向外部的符号链接", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "purge-path-selftest-"));
+  const allowed = path.join(root, "allowed");
+  const outside = path.join(root, "outside");
+  fs.mkdirSync(allowed);
+  fs.mkdirSync(outside);
+  fs.writeFileSync(path.join(outside, "secret.txt"), "secret");
+  try {
+    fs.symlinkSync(outside, path.join(allowed, "redirect"), process.platform === "win32" ? "junction" : "dir");
+    assert.throws(
+      () => validate.assertPathWithin(path.join(allowed, "redirect", "secret.txt"), [allowed]),
+      /outside allowed roots/,
+    );
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+await check("路径校验：拒绝目标尚不存在的悬空符号链接", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "purge-dangling-selftest-"));
+  const allowed = path.join(root, "allowed");
+  const outside = path.join(root, "outside");
+  fs.mkdirSync(allowed);
+  fs.mkdirSync(outside);
+  const link = path.join(allowed, "redirect.txt");
+  const target = path.join(outside, "future.txt");
+  try {
+    try {
+      fs.symlinkSync(target, link, "file");
+    } catch (error) {
+      if (["EEXIST", "EPERM", "EACCES"].includes(error.code)) {
+        console.log("  - 跳过悬空文件软链用例：当前环境无创建权限");
+        return;
+      }
+      throw error;
+    }
+    assert.throws(() => validate.assertPathWithin(link, [allowed]), /symlink target missing/);
+    assert.equal(fs.existsSync(target), false);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+await check("路径校验：允许目录内新建目标并拒绝目录穿越", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "purge-path-missing-"));
+  const allowed = path.join(root, "allowed");
+  fs.mkdirSync(allowed);
+  try {
+    assert.equal(validate.assertPathWithin(path.join(allowed, "new", "file.txt"), [allowed]), path.join(allowed, "new", "file.txt"));
+    assert.throws(() => validate.assertPathWithin(path.join(allowed, "..", "outside"), [allowed]), /outside allowed roots/);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
   }
 });
 

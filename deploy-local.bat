@@ -1,5 +1,4 @@
 @echo off
-chcp 65001 >nul
 setlocal
 cd /d "%~dp0"
 
@@ -14,54 +13,54 @@ if not defined HARNESS_ROOT (
   if exist "%HARNESS_CANDIDATE%\package.json" set "HARNESS_ROOT=%HARNESS_CANDIDATE%"
 )
 if not defined HARNESS_ROOT (
-  echo [è­¦å‘Š] é™„è¿‘æ²¡æ‰¾åˆ° deepseek-harness æºç ç›®å½•ã€‚
-  echo        æ’ä»¶ dshTarget ä¿æŒåŽŸæ ·ï¼Œä¸åšæ”¹åŠ¨ã€‚
+  echo [¾¯¸æ] ¸½½üÃ»ÕÒµ½ deepseek-harness Ô´ÂëÄ¿Â¼¡£
+  echo        ²å¼þ dshTarget ±£³ÖÔ­Ñù£¬²»×ö¸Ä¶¯¡£
 )
 if not exist "%PLUGIN_DIR%\package.json" (
-  echo [é”™è¯¯] ç¼ºå°‘æ’ä»¶ package.jsonã€‚
+  echo [´íÎó] È±ÉÙ²å¼þ package.json¡£
   pause
   exit /b 1
 )
 if not exist "%PROFILE_DIR%\package.json" (
-  echo [é”™è¯¯] æ‰¾ä¸åˆ° web profileï¼š"%PROFILE_DIR%"
+  echo [´íÎó] ÕÒ²»µ½ web profile£º"%PROFILE_DIR%"
   pause
   exit /b 1
 )
 
-rem åœ¨çº¿éƒ¨ç½²ï¼šåªæ›´æ–°æºç é“¾æŽ¥å’Œ lockfileï¼Œ
-rem ä¸ç¢° node_modulesï¼ˆDSH å¯èƒ½æ­£åœ¨åŠ è½½æœ¬æ’ä»¶ï¼‰ã€‚
-echo [1/4] æ›´æ–°æœ¬åœ° profile æ¸…å•...
+rem ÔÚÏß²¿Êð£ºÖ»¸üÐÂÔ´ÂëÁ´½ÓºÍ lockfile£¬
+rem ²»Åö node_modules£¨DSH ¿ÉÄÜÕýÔÚ¼ÓÔØ±¾²å¼þ£©¡£
+echo [1/4] ¸üÐÂ±¾µØ profile Çåµ¥...
 node "%PLUGIN_DIR%scripts\deploy-local.mjs" "%PLUGIN_DIR%\." "%PROFILE_DIR%"
 if errorlevel 1 (
-  echo [é”™è¯¯] éƒ¨ç½²å‡†å¤‡å¤±è´¥ã€‚
+  echo [´íÎó] ²¿Êð×¼±¸Ê§°Ü¡£
   pause
   exit /b 1
 )
 
-echo [2/4] ä»…åˆ·æ–° profile lockfile...
+echo [2/4] ½öË¢ÐÂ profile lockfile...
 pushd "%PROFILE_DIR%"
 call pnpm install --config.minimum-release-age=0 --lockfile-only
 set "LOCK_RC=%ERRORLEVEL%"
 popd
 if not "%LOCK_RC%"=="0" (
-  echo [é”™è¯¯] profile lockfile æ›´æ–°å¤±è´¥ã€‚
+  echo [´íÎó] profile lockfile ¸üÐÂÊ§°Ü¡£
   pause
   exit /b %LOCK_RC%
 )
 
-echo [3/4] æ ¡éªŒæ’ä»¶å…¥å£èƒ½å¦æ­£å¸¸å¯¼å…¥...
+echo [3/4] Ð£Ñé²å¼þÈë¿ÚÄÜ·ñÕý³£µ¼Èë...
 pushd "%PLUGIN_DIR%"
 node -e "import('./lib/index.js').then(m=>{if(typeof m.apply!=='function')process.exit(2);console.log('source dsh-purge import OK')}).catch(e=>{console.error(e);process.exit(1)})"
 set "IMPORT_RC=%ERRORLEVEL%"
 popd
 if not "%IMPORT_RC%"=="0" (
-  echo [é”™è¯¯] æ’ä»¶å…¥å£å¯¼å…¥æ ¡éªŒå¤±è´¥ã€‚
+  echo [´íÎó] ²å¼þÈë¿Úµ¼ÈëÐ£ÑéÊ§°Ü¡£
   pause
   exit /b %IMPORT_RC%
 )
 
 if defined HARNESS_ROOT (
-  echo [4/4] æ£€æŸ¥ DSH profile å®žé™…åŠ è½½æƒ…å†µ...
+  echo [4/4] ¼ì²é DSH profile Êµ¼Ê¼ÓÔØÇé¿ö...
   pushd "%HARNESS_ROOT%"
   call pnpm run dsh --profile web --dump-config > "%TEMP%\dsh-purge-deploy-dump.log" 2>&1
   set "DUMP_RC=%ERRORLEVEL%"
@@ -69,31 +68,31 @@ if defined HARNESS_ROOT (
   if errorlevel 1 (
     findstr /C:"name: dsh-purge" "%TEMP%\dsh-purge-deploy-dump.log" >nul
     if errorlevel 1 (
-      echo [é”™è¯¯] dsh dump-config å¤±è´¥ï¼Œä¸” dsh-purge æœªå‡ºçŽ°åœ¨ç”Ÿæ•ˆé…ç½®é‡Œã€‚
+      echo [´íÎó] dsh dump-config Ê§°Ü£¬ÇÒ dsh-purge Î´³öÏÖÔÚÉúÐ§ÅäÖÃÀï¡£
       type "%TEMP%\dsh-purge-deploy-dump.log"
       pause
       exit /b %DUMP_RC%
     )
-    echo [è­¦å‘Š] dump-config æŠ¥äº†ä¸€äº›ä¸Ž dsh-purge æ— å…³çš„æ—¢æœ‰ profile patch é”™è¯¯ã€‚
-    echo        dsh-purge å·²åœ¨ç”Ÿæ•ˆé…ç½®ä¸­ï¼Œè¯¦è§ï¼š"%TEMP%\dsh-purge-deploy-dump.log"
+    echo [¾¯¸æ] dump-config ±¨ÁËÒ»Ð©Óë dsh-purge ÎÞ¹ØµÄ¼ÈÓÐ profile patch ´íÎó¡£
+    echo        dsh-purge ÒÑÔÚÉúÐ§ÅäÖÃÖÐ£¬Ïê¼û£º"%TEMP%\dsh-purge-deploy-dump.log"
   )
   findstr /C:"name: dsh-purge" "%TEMP%\dsh-purge-deploy-dump.log" >nul
   if errorlevel 1 (
-    echo [é”™è¯¯] ç”Ÿæ•ˆé…ç½®é‡Œç¼ºå°‘ dsh-purgeã€‚
+    echo [´íÎó] ÉúÐ§ÅäÖÃÀïÈ±ÉÙ dsh-purge¡£
     type "%TEMP%\dsh-purge-deploy-dump.log"
     pause
     exit /b 1
   )
-  echo     ç”Ÿæ•ˆé…ç½®å·²åŒ…å« dsh-purgeã€‚
-  echo     æ–¹ä¾¿æ—¶é‡å¯ dsh web å³å¯åŠ è½½æ–°ç‰ˆæœ¬ã€‚
+  echo     ÉúÐ§ÅäÖÃÒÑ°üº¬ dsh-purge¡£
+  echo     ·½±ãÊ±ÖØÆô dsh web ¼´¿É¼ÓÔØÐÂ°æ±¾¡£
 ) else (
-  echo [4/4] è·³è¿‡ DSH é…ç½®æ£€æŸ¥ï¼ˆæœªæ‰¾åˆ°æºç ç›®å½•ï¼‰ã€‚
+  echo [4/4] Ìø¹ý DSH ÅäÖÃ¼ì²é£¨Î´ÕÒµ½Ô´ÂëÄ¿Â¼£©¡£
 )
 
 echo.
 echo ============================================
-echo  éƒ¨ç½²æˆåŠŸï¼DSH å½“å‰ä»åœ¨ç”¨æ—§å‰¯æœ¬ï¼Œ
-echo  æ–¹ä¾¿æ—¶é‡å¯ dsh web å³å¯ç”Ÿæ•ˆæ–°ç‰ˆæœ¬ã€‚
+echo  ²¿Êð³É¹¦£¡DSH µ±Ç°ÈÔÔÚÓÃ¾É¸±±¾£¬
+echo  ·½±ãÊ±ÖØÆô dsh web ¼´¿ÉÉúÐ§ÐÂ°æ±¾¡£
 echo ============================================
 pause
 exit /b 0

@@ -37,6 +37,13 @@
     "embed-prompt": "node scripts/embed-default-prompt.mjs",
     "build:client": "node scripts/build-client.mjs",
     "selftest": "node scripts/selftest.mjs",
+    "test:poc-file-multiprocess": "node scripts/test-poc-file-multiprocess.mjs",
+    "test:poc-cleanup-race": "node scripts/test-poc-cleanup-race.mjs",
+    "test:attack-file-path-collision": "node scripts/test-attack-file-path-collision.mjs",
+    "test:target-db-multiprocess": "node scripts/test-target-db-multiprocess.mjs",
+    "test:poc-file-transaction": "node lib/redteam/poc-file-transaction.test.js",
+    "bench:score-report": "node scripts/bench-score-report.mjs",
+    "bench:representative-shots": "node scripts/bench-representative-shots.mjs",
     "smoke:swap": "node scripts/smoke-swap.mjs",
     "smoke:idle": "node scripts/smoke-idle.mjs"
   },
@@ -92,7 +99,7 @@
     "@deepseek-ai/cordis": "^4.0.1"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22.5"
   },
-  "dshTarget": "0.2.2-rc.1"
+  "dshTarget": "0.2.2-rc.3"
 }

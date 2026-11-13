@@ -12,6 +12,10 @@ docs/agents/
 # 本地草稿，不进仓库
 scripts/tmp-*.mjs
 scripts/test-*.mjs
+!scripts/test-target-db-multiprocess.mjs
+!scripts/test-poc-file-multiprocess.mjs
+!scripts/test-poc-cleanup-race.mjs
+!scripts/test-attack-file-path-collision.mjs
 .scratch/
 dsh-redteam-mode-main/
 /1
@@ -32,3 +36,10 @@ default-prompt-inject.md
 /official-harness-payload.7z
 *.asar
 *.asar.bak
+
+# 部署备份与测试运行产物
+*.bak
+.tmp-tests/
+
+# 本地任务台账 / 工作日志运行记录，不进仓库
+ledger/
