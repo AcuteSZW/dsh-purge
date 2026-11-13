@@ -1,5 +1,6 @@
 {
   "tasks": {
+    "20261113-1307-364c-记录红队存储修复交付": {"category": "缺陷修复", "created": "2026-11-13 13:07:20", "creator": "00094ae7-dd47-4566-ad6e-326b64dc4e53", "creator_name": "Lucas", "finished": null, "owner": null, "owner_name": null, "started": null, "status": "open", "tags": ["存储修复", "并发写入", "路径安全"], "title": "记录红队存储修复交付", "updated": "2026-11-13 13:07:20", "worklog": "worklog/202611/13-1307-364c-记录红队存储修复交付.md"}
   },
   "version": "20261022000000"
 }
