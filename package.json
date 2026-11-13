@@ -1,6 +1,6 @@
 {
   "name": "dsh-purge",
-  "version": "1.1.73+dsh0.2.1",
+  "version": "1.1.74+dsh0.2.2-rc.3",
   "description": "DeepSeek Harness 破甲：让所有模型都能破甲，不同模型可换不同提示词；默认提示词面向国模「小码酱」。Jailbreak for every model — swap prompts per model. 求 Star 收藏 ⭐ 如要二开，请查看署名要求部分",
   "type": "module",
   "main": "lib/index.js",
@@ -30,7 +30,7 @@
     "cordis.patch.yml",
     "screenshots.json",
     "README.md",
-    "README.zh-CN.md",
+    "README.EN.md",
     "LICENSE"
   ],
   "scripts": {
@@ -65,11 +65,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YuJunZhiXue/dsh-purge.git"
+    "url": "git+https://github.com/AcuteSZW/dsh-purge.git"
   },
-  "homepage": "https://github.com/YuJunZhiXue/dsh-purge#readme",
+  "homepage": "https://github.com/AcuteSZW/dsh-purge#readme",
   "bugs": {
-    "url": "https://github.com/YuJunZhiXue/dsh-purge/issues"
+    "url": "https://github.com/AcuteSZW/dsh-purge/issues"
   },
   "dsh": {
     "bundle": {
@@ -87,9 +87,9 @@
     },
     "install": {
       "preferred": "tarball",
-      "tarball": "https://github.com/2540656380/dsh-purge/archive/refs/heads/main.tar.gz",
-      "zip": "https://github.com/2540656380/dsh-purge/archive/refs/heads/main.zip",
-      "git": "https://github.com/2540656380/dsh-purge.git"
+      "tarball": "https://github.com/AcuteSZW/dsh-purge/archive/refs/heads/main.tar.gz",
+      "zip": "https://github.com/AcuteSZW/dsh-purge/archive/refs/heads/main.zip",
+      "git": "https://github.com/AcuteSZW/dsh-purge.git"
     }
   },
   "publishConfig": {
